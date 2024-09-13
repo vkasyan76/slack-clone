@@ -66,6 +66,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             placeholder="Email"
             type="email"
             required
+            autoComplete="email"
           />
           <Input
             disabled={pending}
@@ -74,6 +75,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             placeholder="Password"
             type="password"
             required
+            autoComplete="current-password"
           />
           <Button type="submit" className="w-full" size="lg" disabled={pending}>
             Continue

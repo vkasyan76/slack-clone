@@ -90,6 +90,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             placeholder="Password"
             type="password"
             required
+            autoComplete="new-password"
           />
           <Input
             disabled={pending}
@@ -98,6 +99,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             placeholder="Confirm Password"
             type="password"
             required
+            autoComplete="new-password"
           />
           <Button type="submit" className="w-full" size="lg" disabled={pending}>
             Continue
