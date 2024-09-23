@@ -2,27 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { Info, Search } from "lucide-react";
-import { Loader } from "lucide-react";
-import { useConvexAuth } from "convex/react";
 
 export const Toolbar = () => {
   const workspaceId = useWorkspaceId();
   const { data } = useGetWorkspace({ id: workspaceId });
-
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  // If authentication status is loading, you might want to render a loading indicator
-  if (isLoading) {
-    // or a loading spinner
-    return <Loader className="size-5 animate-spin shrink-0" />;
-
-    // return null;
-  }
-
-  // If the user is not authenticated, don't render the component
-  if (!isAuthenticated) {
-    return null; // or render a default UI for unauthenticated users
-  }
 
   return (
     <nav className="bg-[#481349] flex items-center justify-between h-10 p-1.5">
