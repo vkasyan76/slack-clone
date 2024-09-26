@@ -2,7 +2,8 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useCallback, useMemo, useState } from "react";
-type RequestType = { name: string };
+
+type RequestType = { id: Id<"workspaces">; name: string };
 type ResponseType = Id<"workspaces"> | null;
 // Things the user will add to the mutation
 type Options = {
@@ -11,33 +12,25 @@ type Options = {
   onSettled?: () => void;
   throwError?: boolean;
 };
-export const useCreateWorkspace = () => {
+export const useUpdateWorkspace = () => {
   const [data, setData] = useState<ResponseType>(null);
   const [error, setError] = useState<Error | null>(null);
 
   const [status, setStatus] = useState<
     "success" | "error" | "settled" | "pending" | null
   >(null);
-  // const [isPending, setIsPending] = useState(false);
-  // const [isSuccess, setIsSuccess] = useState(false);
-  // const [isError, setIsError] = useState(false);
-  // const [isSettled, setIsSettled] = useState(false);
 
   // To avoid overlapping of the states:
   const isPending = useMemo(() => status === "pending", [status]);
   const isSuccess = useMemo(() => status === "success", [status]);
   const isError = useMemo(() => status === "error", [status]);
   const isSettled = useMemo(() => status === "settled", [status]);
-  const mutation = useMutation(api.workspaces.create);
+  const mutation = useMutation(api.workspaces.update);
   const mutate = useCallback(
     async (values: RequestType, options?: Options) => {
       try {
         setData(null);
         setError(null);
-        // setIsError(false);
-        // setIsSettled(false);
-        // setIsSuccess(false);
-        // setIsPending(true);
         setStatus("pending");
 
         const response = await mutation(values);
