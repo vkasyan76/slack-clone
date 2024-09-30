@@ -50,8 +50,8 @@ export const InviteModal = ({
       );
   };
 
-  const handleNewCode = () => {
-    const ok = confirm();
+  const handleNewCode = async () => {
+    const ok = await confirm();
 
     if (!ok) {
       return;
