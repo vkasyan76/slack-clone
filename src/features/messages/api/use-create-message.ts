@@ -8,7 +8,8 @@ type RequestType = {
   channelId?: Id<"channels">;
   parentMessageId?: Id<"messages">;
   image?: Id<"_storage">;
-  //   TODO?: add conversationId;
+  //  add conversationId:
+  conversationId?: Id<"conversations">;
 };
 type ResponseType = Id<"messages"> | null;
 // Things the user will add to the mutation
