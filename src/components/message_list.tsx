@@ -1,6 +1,11 @@
 import { GetMessagesReturnType } from "@/features/messages/api/use-get-messages";
 import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import { Message } from "./message";
+import { ChannelHero } from "./channel-hero";
+import { useState } from "react";
+import { Id } from "../../convex/_generated/dataModel";
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { useCurrentMember } from "@/features/members/api/use-current-member";
 
 // number of minutes for messages to be considered compact. Agter which fall back to non-compact.
 const TIME_THRESHOLD = 5;
@@ -36,6 +41,12 @@ export const MessageList = ({
   isLoadingMore,
   canLoadMore,
 }: MessageListProps) => {
+  const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
+
+  const workspaceId = useWorkspaceId();
+
+  const { data: currentMember } = useCurrentMember({ workspaceId });
+
   // Group messages by date:
   //   In .reduce(), the second argument passed is the initial value of the accumulator.
   // In this case, we’re setting the initial value of groups (the accumulator) to an empty object ({}) => as Record<string, typeof data>
@@ -88,16 +99,16 @@ export const MessageList = ({
                 memberId={message.memberId}
                 authorImage={message.user.image}
                 authorName={message.user.name}
-                isAuthor={false} // Set appropriately if you have author data
+                isAuthor={message.memberId === currentMember?._id} // if messege member id is current member than he is the author
                 reactions={message.reactions}
                 body={message.body}
                 image={message.image}
                 updatedAt={message.updatedAt}
                 createdAt={message._creationTime}
-                isEditing={false} // Set based on editing state
-                isCompact={isCompact} // Adjust as necessary
-                setEditingId={() => {}} // Provide actual editing function if needed
-                hideThreadButton={false} // Set based on your needs
+                isEditing={editingId === message._id} // editing when we are in the message id
+                setEditingId={setEditingId} // set the editing id to the current message id
+                isCompact={isCompact}
+                hideThreadButton={variant === "thread"} // Hide thread button if in thread view: if we are in a thread no possibility to reply on a reply
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}
                 threadTimestamp={message.threadTimestamp}
@@ -106,6 +117,9 @@ export const MessageList = ({
           })}
         </div>
       ))}
+      {variant === "channel" && channelName && channelCreationTime && (
+        <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      )}
     </div>
   );
 };
