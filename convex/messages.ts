@@ -199,15 +199,23 @@ export const get = query({
             });
 
             // combine same reactions into counts
+            // acc.find checks if there’s already an entry in acc where r.value === reaction.value
+            // If an entry is found, it’s assigned to existingReaction
+
             const dedupedReactions = reactionsWithCounts.reduce(
               (acc, reaction) => {
                 const existingReaction = acc.find(
                   (r) => r.value === reaction.value
                 );
+
                 if (existingReaction) {
                   // Set from the array, which automatically removes any duplicates.
                   // When you update existingReaction.memberIds, you're directly modifying the reference to that reaction object inside the acc array.
                   // So the updated memberIds are automatically reflected in acc because JavaScript objects and arrays are passed by reference.
+
+                  // If existingReaction is found, it means there’s already an entry in acc for this emoji (value).
+                  // In this case, we add the current reaction.memberId to the existingReaction.memberIds array. This is done by:
+
                   existingReaction.memberIds = Array.from(
                     new Set([...existingReaction.memberIds, reaction.memberId])
                   );
