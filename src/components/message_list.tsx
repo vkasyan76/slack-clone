@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Id } from "../../convex/_generated/dataModel";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { useCurrentMember } from "@/features/members/api/use-current-member";
+import { Loader } from "lucide-react";
 
 // number of minutes for messages to be considered compact. Agter which fall back to non-compact.
 const TIME_THRESHOLD = 5;
@@ -73,7 +74,6 @@ export const MessageList = ({
   return (
     <div className="flex-1 flex flex-col-reverse pb-4 overflow-y-auto messages-scrollbar">
       {/* {data?.map((message) => <div>{JSON.stringify(message)}</div>)} */}
-
       {Object.entries(groupedMessages || {}).map(([dateKey, messages]) => (
         <div key={dateKey}>
           <div className="text-center my-2 relative">
@@ -117,6 +117,39 @@ export const MessageList = ({
           })}
         </div>
       ))}
+      {/* <div>
+        <button onClick={loadMore}>Load More</button>
+      </div> */}
+      {/* The ref attribute on this element attaches an Intersection Observer to it. The observer watches for when this element enters the viewport. */}
+      {/* In the ref callback, el is either null (when the component first mounts)  or the actual DOM node for the div. */}
+      <div
+        className="h-1"
+        ref={(el) => {
+          if (el) {
+            const observer = new IntersectionObserver(
+              // [entry] simplifies grabbing the first entry in the entries array.
+              // The callback function checks if canLoadMore is true and, if so, calls loadMore().
+              ([entry]) => {
+                if (entry.isIntersecting && canLoadMore) {
+                  loadMore();
+                }
+              },
+              { threshold: 1.0 }
+              // hreshold of 1.0 means that the callback will trigger only when 100% of the element is visible within the viewport
+            );
+            observer.observe(el);
+            return () => observer.disconnect();
+          }
+        }}
+      />
+      {isLoadingMore && (
+        <div className="text-center my-2 relative">
+          <hr className="absolute top-1/2 left-0 right-0 border-t border-gray-300" />
+          <span className="relative inline-block bg-white px-4 py-1 rounded-full text-xs border border-gray-300 shadow-sm">
+            <Loader className="size-4 animate-spin" />
+          </span>
+        </div>
+      )}
       {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
       )}
