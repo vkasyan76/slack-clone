@@ -11,6 +11,8 @@ import { MessageList } from "@/components/message_list";
 const ChannelIdPage = () => {
   const channelId = useChannelId();
 
+  // Because parentMessageId is not provided in this case, the get query in convex/messages.ts doesn’t filter messages based on parentMessageId.
+
   const { results, status, loadMore } = useGetMessages({ channelId });
 
   // console.log({ results });
