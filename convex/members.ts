@@ -8,6 +8,51 @@ const populateUser = async (ctx: QueryCtx, userId: Id<"users">) => {
   return await ctx.db.get(userId);
 };
 
+// get individual member for conversations
+
+export const getById = query({
+  args: { id: v.id("members") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      return null;
+    }
+
+    const member = await ctx.db.get(args.id);
+    if (!member) {
+      return null;
+    }
+
+    // confirm that current member exists:
+    const currentMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", member.workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!currentMember) {
+      return null;
+    }
+
+    const user = await populateUser(ctx, member.userId);
+
+    if (!user) {
+      return null;
+    }
+
+    // the member data along with the entire user object embedded within it
+
+    return {
+      ...member,
+      user,
+    };
+  },
+});
+
+// get members for workspace
+
 export const get = query({
   args: { workspaceId: v.id("workspaces") },
   handler: async (ctx, args) => {
