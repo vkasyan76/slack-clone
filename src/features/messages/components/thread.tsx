@@ -231,6 +231,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
                   hideThreadButton // Hide thread button if in thread view: if we are in a thread no possibility to reply on a reply
                   threadCount={message.threadCount}
                   threadImage={message.threadImage}
+                  threadName={message.threadName}
                   threadTimestamp={message.threadTimestamp}
                 />
               );
